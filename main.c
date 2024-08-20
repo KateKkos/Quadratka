@@ -10,7 +10,13 @@ int main ()
 
     printf("This is the square equation solver (ax^2 + bx + c = 0).\n");
     printf("Enter coefficients a, b and c in form \"a b c\" or \"0 0 0\" for exit: ");
-    scanf("%lf %lf %lf", &a, &b, &c);
+
+    while (scanf("%lf %lf %lf", &a, &b, &c) != 3)
+        {
+            printf("Please, enter the coefficients again. They must be floating point numbers\n(\"0 0 0\" for exit): ");
+            while (getchar() != '\n');
+        }
+
     while (!(a == 0 && b == 0 && c == 0))
     {
         double x1, x2;
@@ -26,7 +32,11 @@ int main ()
         }
 
         printf("Enter coefficients a, b and c or \"0 0 0\" for exit: ");
-        scanf("%lf %lf %lf", &a, &b, &c);
+        while (scanf("%lf %lf %lf", &a, &b, &c) != 3)
+        {
+            printf("Please, enter the coefficients again. They must be floating point numbers\n(\"0 0 0\" for exit): ");
+            while (getchar() != '\n');
+        }
     }
 
     printf("Finished!\n");
@@ -76,3 +86,16 @@ int squareSolve(double a, double b, double c, double* x1, double* x2)
 
     return solutions_cnt_func;
 }
+
+//int main()
+//{
+//    double a, b, c;
+//    while (scanf("%lf %lf %lf", &a, &b, &c) != 3)
+//    {
+//        printf("Please, enter the coefficients again. They must be floating point numbers: ");
+//        while (getchar() != '\n');
+//    }
+//
+//    printf("%lf %lf %lf", a, b, c);
+//    return 0;
+//}
