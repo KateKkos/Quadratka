@@ -1,49 +1,37 @@
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 
-int squareSolve(double a, double b, double c, double* x1, double* x2);
+void output_solutions(int sols_cnt, double* x1, double* x2, double* a, double* b, double* c);
+void do_correct_input(double* a, double* b, double* c);
+int solve_square(double a, double b, double c, double* x1, double* x2);
+
 int main ()
 {
-    double a, b, c;
-    int solutions_cnt;
-    a = b = c = 0;
+    double a = 0, b = 0, c = 0;
+    int solutions_cnt = 0;
 
-    printf("This is the square equation solver (ax^2 + bx + c = 0).\n");
-    printf("Enter coefficients a, b and c in form \"a b c\" or \"0 0 0\" for exit: ");
+    printf("This is the square equation solver (ax^2 + bx + c = 0).\n\n");
+    printf("Enter coefficients a, b and c in form \"a b c\" or # for exit: ");
+    do_correct_input(&a, &b, &c);
 
-    while (scanf("%lf %lf %lf", &a, &b, &c) != 3)
-        {
-            printf("Please, enter the coefficients again. They must be floating point numbers\n(\"0 0 0\" for exit): ");
-            while (getchar() != '\n');
-        }
-
-    while (!(a == 0 && b == 0 && c == 0))
+    while (1)
     {
         double x1, x2;
-        solutions_cnt = squareSolve(a, b, c, &x1, &x2);
-        switch (solutions_cnt)
-        {
-            case 0: printf("The equation has no solutions.\n\n");
-                break;
-            case 1: printf("The equation has 1 solution: %.2lf.\n\n", x1);
-                break;
-            case 2: printf("The equation has 2 solutions: %.2lf and %.2lf.\n\n", x1, x2);
-                break;
-        }
+        solutions_cnt = solve_square(a, b, c, &x1, &x2);
+        output_solutions(solutions_cnt, &x1, &x2, &a, &b, &c);
 
-        printf("Enter coefficients a, b and c or \"0 0 0\" for exit: ");
-        while (scanf("%lf %lf %lf", &a, &b, &c) != 3)
-        {
-            printf("Please, enter the coefficients again. They must be floating point numbers\n(\"0 0 0\" for exit): ");
-            while (getchar() != '\n');
-        }
+        printf("Enter coefficients a, b and c or # for exit: ");
+        do_correct_input(&a, &b, &c);
     }
 
-    printf("Finished!\n");
+    printf("\nSuccessfully finished!\n");
     return 0;
 }
 
-int squareSolve(double a, double b, double c, double* x1, double* x2)
+
+
+int solve_square(double a, double b, double c, double* x1, double* x2)
 {
     double D;
     int solutions_cnt_func;
@@ -64,6 +52,8 @@ int squareSolve(double a, double b, double c, double* x1, double* x2)
         }
         else if (b == 0 && c != 0)
             solutions_cnt_func = 0;
+        else if (b == 0 && c == 0)
+            solutions_cnt_func = -1;
     }
     else
     {
@@ -87,15 +77,61 @@ int squareSolve(double a, double b, double c, double* x1, double* x2)
     return solutions_cnt_func;
 }
 
-//int main()
-//{
-//    double a, b, c;
-//    while (scanf("%lf %lf %lf", &a, &b, &c) != 3)
-//    {
-//        printf("Please, enter the coefficients again. They must be floating point numbers: ");
-//        while (getchar() != '\n');
-//    }
-//
-//    printf("%lf %lf %lf", a, b, c);
-//    return 0;
-//}
+
+
+void do_correct_input(double* a, double* b, double* c)
+{
+    int ch;
+    while (scanf("%lf %lf %lf", a, b, c) != 3)
+    {
+        if ((ch = getchar()) == EOF)
+        {
+            printf("\nInput error! Run the programm again 1.\n");
+            exit(EXIT_FAILURE);
+        }
+
+        else if (ch == '#')
+            {
+                printf("\nSuccessfully finished!\n");
+                exit(EXIT_SUCCESS);
+            }
+
+        printf("\nPlease, enter the coefficients again. They must be floating point numbers (# for exit): ");
+        while ((ch = getchar()) != '\n')
+        {
+            if (ch == EOF)
+            {
+                  printf("\nInput error! Run the programm again 2.\n");
+                  exit(EXIT_FAILURE);
+            }
+
+            if (ch == '#')
+            {
+                printf("\nSuccessfully finished!\n");
+                exit(EXIT_SUCCESS);
+            }
+
+        }
+    }
+}
+
+
+
+void output_solutions(int sols_cnt, double* x1, double* x2, double* a, double* b, double* c)
+{
+    switch (sols_cnt)
+        {
+            case 0: printf("The equation %.2lfx^2 + %.2lfx + %.2lf = 0 has no solutions.\n\n",
+                        *a, *b, *c);
+                break;
+            case 1: printf("The equation %.2lfx^2 + %.2lfx + %.2lf = 0 has 1 solution: %.2lf.\n\n",
+                        *a, *b, *c, *x1);
+                break;
+            case 2: printf("The equation %.2lfx^2 + %.2lfx + %.2lf = 0 has 2 solutions: %.2lf and %.2lf.\n\n",
+                        *a, *b, *c, *x1, *x2);
+                break;
+            case -1: printf("The equation %.2lfx^2 + %.2lfx + %.2lf = 0 has an infinite number of solutions.\n\n",
+                                    *a, *b, *c);
+
+        }
+}
